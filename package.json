@@ -1,0 +1,26 @@
+{
+  "name": "friend_computer_twitter",
+  "version": "1.0.0",
+  "description": "Twitter-to-Discord filtered stream relay",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "./node_modules/.bin/tsc",
+    "start": "cd dist && node index.js",
+    "debug": "cd dist && node --inspect index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "discord.js": "^12.5.3",
+    "twitter-v2": "^1.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.37",
+    "@types/ws": "^7.4.1",
+    "@typescript-eslint/eslint-plugin": "^2.34.0",
+    "@typescript-eslint/parser": "^2.34.0",
+    "eslint": "^6.8.0",
+    "typescript": "^4.2.3"
+  },
+  "author": "Alexander Kashev <alexander@kashev.me>",
+  "license": "MIT"
+}

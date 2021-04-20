@@ -1,0 +1,15 @@
+{
+  "bearer_token": "Twitter application bearer token",
+  "webhooks": [
+    {
+      "tag": "Tag from rules 1",
+      "id": "Discord webhook ID 1",
+      "token": "Discord webhook token 1"
+    },
+    {
+      "tag": "Tag from rules 2",
+      "id": "Discord webhook ID 2",
+      "token": "Discord webhook token 2"
+    }
+  ]
+}
