@@ -2,7 +2,8 @@ interface StreamResponse {
   data: {
     id: string,
     text: string,
-    author_id: string
+    author_id: string,
+    source: string
   },
   includes: {
     users: [
