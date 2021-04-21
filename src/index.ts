@@ -3,9 +3,9 @@ import Twitter from "twitter-v2";
 import TwitterStream from "twitter-v2/build/TwitterStream";
 import { loadConfig } from "./config";
 
-function delay(ms: number) {
+function delay(ms: number): Promise<void> {
   return new Promise(resolve => {
-    setTimeout(() => resolve, ms);
+    setTimeout(() => { resolve() }, ms);
   })
 }
 
@@ -37,7 +37,7 @@ async function init() {
     try {
       tweetStream = twitterClient.stream("tweets/search/stream", {
         "expansions": ["author_id"],
-        "tweet.fields": ["id", "author_id", "text", "source"],
+        "tweet.fields": ["id", "author_id", "text", "source", "in_reply_to_user_id"],
         "user.fields": ["id", "name", "username"]
       });
 
@@ -48,7 +48,9 @@ async function init() {
         const author = users[0];
 
         console.log(`${author.name} just tweeted: https://twitter.com/${author.username}/status/${data.id}`);
+        console.log(`${data.text}`);
         console.log(`Source: ${data.source}`);
+        console.log(`Author ID: ${data.author_id}, in reply to ID: ${data.in_reply_to_user_id ?? "(Not a reply)"}`);
         console.log(`Matching rules: ${matching_rules.map(rule => rule.tag)}\n`);
 
         if (config.source_filters.includes(data.source)) {

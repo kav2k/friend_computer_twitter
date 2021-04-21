@@ -3,7 +3,8 @@ interface StreamResponse {
     id: string,
     text: string,
     author_id: string,
-    source: string
+    source: string,
+    in_reply_to_user_id?: string
   },
   includes: {
     users: [
