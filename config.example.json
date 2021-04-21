@@ -11,5 +11,6 @@
       "id": "Discord webhook ID 2",
       "token": "Discord webhook token 2"
     }
-  ]
+  ],
+  "source_filters": ["Twitter Application You Don't Want To See"]
 }

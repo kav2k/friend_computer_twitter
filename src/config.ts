@@ -8,7 +8,8 @@ interface IConfig {
       id: string,
       token: string
     }
-  ]
+  ],
+  source_filters: string[]
 }
 
 export async function loadConfig(path = "../config.json"): Promise<IConfig> {

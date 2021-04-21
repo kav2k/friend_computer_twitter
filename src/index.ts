@@ -3,6 +3,12 @@ import Twitter from "twitter-v2";
 import TwitterStream from "twitter-v2/build/TwitterStream";
 import { loadConfig } from "./config";
 
+function delay(ms: number) {
+  return new Promise(resolve => {
+    setTimeout(() => resolve, ms);
+  })
+}
+
 async function init() {
   let running = true;
 
@@ -41,19 +47,24 @@ async function init() {
         const { data, includes: { users }, matching_rules } = response as StreamResponse;
         const author = users[0];
 
-        const webhook = webhooks.find((webhook, tag) => matching_rules.some(rule => rule.tag == tag));
-
         console.log(`${author.name} just tweeted: https://twitter.com/${author.username}/status/${data.id}`);
         console.log(`Source: ${data.source}`);
         console.log(`Matching rules: ${matching_rules.map(rule => rule.tag)}\n`);
 
-        webhook?.send(`${author.name} just tweeted: https://twitter.com/${author.username}/status/${data.id}`);  
+        if (config.source_filters.includes(data.source)) {
+          console.log("Tweet ignored by source filter");
+        } else {
+          const webhook = webhooks.find((webhook, tag) => matching_rules.some(rule => rule.tag == tag));
+
+          webhook?.send(`${author.name} just tweeted: https://twitter.com/${author.username}/status/${data.id}`);  
+        }
       }
 
       console.error(`Client disconnected normally. ${running ? "Reconnecting" : "Shutting down"}.`);
     } catch (err) {
-      console.error(`Client disconnected with an error: ${err}. Terminating.`)
+      console.error(`Client disconnected with an error: ${err}. Terminating with delay.`)
       running = false;
+      await delay(5000);
       process.exit(1);
     }
   }
