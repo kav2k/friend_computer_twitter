@@ -4,7 +4,16 @@ interface StreamResponse {
     text: string,
     author_id: string,
     source: string,
-    in_reply_to_user_id?: string
+    in_reply_to_user_id?: string,
+    entities?: {
+      mentions?: [
+        username: string
+      ]
+    },
+    referenced_tweets: [{
+      type: string,
+      id: string
+    }]
   },
   includes: {
     users: [
@@ -13,7 +22,8 @@ interface StreamResponse {
         name: string,
         username: string
       }
-    ]
+    ],
+    tweets?: any[]
   }
   matching_rules: [
     {

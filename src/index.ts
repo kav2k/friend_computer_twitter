@@ -2,6 +2,7 @@ import { Collection, WebhookClient } from "discord.js";
 import Twitter from "twitter-v2";
 import TwitterStream from "twitter-v2/build/TwitterStream";
 import { loadConfig } from "./config";
+import util from "util";
 
 function delay(ms: number): Promise<void> {
   return new Promise(resolve => {
@@ -36,14 +37,15 @@ async function init() {
   while (running) {
     try {
       tweetStream = twitterClient.stream("tweets/search/stream", {
-        "expansions": ["author_id"],
-        "tweet.fields": ["id", "author_id", "text", "source", "in_reply_to_user_id"],
+        "expansions": ["author_id", "entities.mentions.username", "referenced_tweets.id"],
+        "tweet.fields": ["id", "author_id", "text", "source", "in_reply_to_user_id", "entities", "referenced_tweets"],
         "user.fields": ["id", "name", "username"]
       });
 
       console.log("Connected!\n")
 
       for await (const response of tweetStream) {
+        console.log(util.inspect(response, { depth: 10 }));
         const { data, includes: { users }, matching_rules } = response as StreamResponse;
         const author = users[0];
 
@@ -51,6 +53,8 @@ async function init() {
         console.log(`${data.text}`);
         console.log(`Source: ${data.source}`);
         console.log(`Author ID: ${data.author_id}, in reply to ID: ${data.in_reply_to_user_id ?? "(Not a reply)"}`);
+        console.log(`Entities > Mentions: ${util.inspect(data?.entities?.mentions)}`);
+        console.log(`Referenced tweets: ${util.inspect(data.referenced_tweets)}`);
         console.log(`Matching rules: ${matching_rules.map(rule => rule.tag)}\n`);
 
         if (config.source_filters.includes(data.source)) {
@@ -66,7 +70,7 @@ async function init() {
     } catch (err) {
       console.error(`Client disconnected with an error: ${err}. Terminating with delay.`)
       running = false;
-      await delay(5000);
+      await delay(30000);
       process.exit(1);
     }
   }
